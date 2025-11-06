@@ -13,7 +13,7 @@ let ctx, nextCtx, scoreCtx;
 
 // --- CORES E FORMAS DAS PEÇAS ---
 const COLORS = [
-    null,       // 0: Vazio
+    null, // 0: Vazio
     '#00ffff', // 1: I (Ciano)
     '#0000ff', // 2: J (Azul)
     '#ff7f00', // 3: L (Laranja)
@@ -24,18 +24,49 @@ const COLORS = [
 ];
 
 const TETROMINOS = {
-    I: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]],
-    J: [[2, 0, 0], [2, 0, 0], [2, 2, 0]],
-    L: [[0, 0, 3], [0, 0, 3], [0, 3, 3]],
-    O: [[4, 4], [4, 4]],
-    S: [[0, 5, 5], [5, 5, 0], [0, 0, 0]],
-    T: [[0, 6, 0], [6, 6, 6], [0, 0, 0]],
-    Z: [[7, 7, 0], [0, 7, 7], [0, 0, 0]]
+    I: [
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0]
+    ],
+    J: [
+        [2, 0, 0],
+        [2, 0, 0],
+        [2, 2, 0]
+    ],
+    L: [
+        [0, 0, 3],
+        [0, 0, 3],
+        [0, 3, 3]
+    ],
+    O: [
+        [4, 4],
+        [4, 4]
+    ],
+    S: [
+        [0, 5, 5],
+        [5, 5, 0],
+        [0, 0, 0]
+    ],
+    T: [
+        [0, 6, 0],
+        [6, 6, 6],
+        [0, 0, 0]
+    ],
+    Z: [
+        [7, 7, 0],
+        [0, 7, 7],
+        [0, 0, 0]
+    ]
 };
 
 // --- ESTADO DO JOGO (Variáveis Globais) ---
 const player = {
-    pos: { x: 0, y: 0 },
+    pos: {
+        x: 0,
+        y: 0
+    },
     matrix: null,
     nextMatrix: null,
     score: 0,
@@ -79,7 +110,10 @@ function createPiece(type) {
 }
 
 function collide(board, player) {
-    const { matrix: m, pos: o } = player;
+    const {
+        matrix: m,
+        pos: o
+    } = player;
     for (let y = 0; y < m.length; y++) {
         for (let x = 0; x < m[y].length; x++) {
             if (m[y][x] !== 0 && (board[y + o.y] && board[y + o.y][x + o.x]) !== 0) {
@@ -100,6 +134,7 @@ function merge(board, player) {
     });
 }
 
+// --- FUNÇÃO clearLines (Easter Egg removido) ---
 function clearLines() {
     outer: for (let y = board.length - 1; y >= 0; y--) {
         for (let x = 0; x < board[y].length; x++) {
@@ -113,11 +148,14 @@ function clearLines() {
         y++;
     }
 }
+// --- FIM DA FUNÇÃO ---
 
 function rotate(matrix, dir) {
     const h = matrix.length;
     const w = matrix[0].length;
-    const res = Array.from({ length: w }, () => Array(h).fill(0));
+    const res = Array.from({
+        length: w
+    }, () => Array(h).fill(0));
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
             if (dir > 0) {
@@ -136,7 +174,7 @@ function formatTime(totalSeconds) {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return String(minutes).padStart(2, '0') + ':' +
-           String(seconds).padStart(2, '0');
+        String(seconds).padStart(2, '0');
 }
 
 function loadHighScore() {
@@ -244,7 +282,7 @@ function spawnPiece() {
         player.score = 0;
         updateScore();
         isPaused = true;
-        
+
         if (pauseMenu && pauseMenu.open) {
             pauseMenu.close();
         }
@@ -258,9 +296,9 @@ function spawnPiece() {
             timerInterval = null;
         }
         secondsElapsed = 0;
-        
+
         if (timerDisplay) timerDisplay.style.display = 'none';
-        
+
         // --- MODIFICAÇÃO: Habilitar input e mostrar botão Iniciar ---
         // Habilita o campo de nome e foca nele
         if (playerNameInput) {
@@ -270,10 +308,10 @@ function spawnPiece() {
         }
         // Mostra o botão Iniciar principal novamente
         if (startButton) {
-            startButton.style.display = 'flex'; 
+            startButton.style.display = 'flex';
         }
         // --- FIM DA MODIFICAÇÃO ---
-        
+
         // --- Mostrar popup de Game Over ---
         if (gameOverMenu) {
             gameOverMenu.showModal(); // Mostra o popup de Fim de Jogo
@@ -303,14 +341,20 @@ function draw() {
     if (!ctx || !nextCtx) return;
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, COLS, ROWS);
-    drawMatrix(board, { x: 0, y: 0 }, ctx);
-    
+    drawMatrix(board, {
+        x: 0,
+        y: 0
+    }, ctx);
+
     nextCtx.fillStyle = '#000';
     nextCtx.fillRect(0, 0, 5, 5);
 
     if (!isPaused) {
         drawMatrix(player.matrix, player.pos, ctx);
-        drawMatrix(player.nextMatrix, { x: 0, y: 0 }, nextCtx);
+        drawMatrix(player.nextMatrix, {
+            x: 0,
+            y: 0
+        }, nextCtx);
     }
 }
 
@@ -336,7 +380,7 @@ function updateTimerDisplay() {
 function adjustVolume(event) {
     if (!music) return;
     const newVolume = parseFloat(event.target.value);
-    
+
     if (newVolume > 0) {
         lastVolume = newVolume;
     }
@@ -376,7 +420,8 @@ function pauseGame() {
         if (timerInterval) clearInterval(timerInterval);
         timerInterval = null;
         if (pauseMenu) pauseMenu.showModal();
-    } 
+    }
+    // Caso 2: O jogo está pausado no menu inicial
     else if (isPaused && startButton && startButton.style.display !== 'none') {
         // Apenas mostre o menu
         if (pauseMenu) pauseMenu.showModal();
@@ -387,12 +432,12 @@ function pauseGame() {
 function resumeGame() {
     // Se o botão Iniciar NÃO está visível (jogo pausado no meio da partida)
     if (startButton && startButton.style.display === 'none') {
-        if (!isPaused) return; 
+        if (!isPaused) return;
         isPaused = false;
         if (pauseMenu) pauseMenu.close();
         if (music && !isMuted) music.play();
-        
-        if (timerInterval) clearInterval(timerInterval); 
+
+        if (timerInterval) clearInterval(timerInterval);
         timerInterval = setInterval(() => {
             secondsElapsed++;
             updateTimerDisplay();
@@ -400,7 +445,7 @@ function resumeGame() {
 
         lastFrameTime = performance.now();
         update(lastFrameTime);
-    } 
+    }
     // Se o botão Iniciar ESTÁ visível (pausado no menu inicial)
     else {
         if (pauseMenu) pauseMenu.close();
@@ -432,52 +477,52 @@ function update(time = 0) {
 }
 
 document.addEventListener('keydown', e => {
-    
+
     // Controle de Pausa (tecla 'p')
     // É uma boa prática verificar a pausa primeiro
     if (e.key === 'p') {
         e.preventDefault(); // Previne qualquer ação padrão da tecla 'p'
-        
+
         // Se o botão "Iniciar" está escondido (style.display === 'none')
         if (startButton && startButton.style.display === 'none') {
             togglePause(); // Alterna entre pause e resume
-        } 
+        }
         // Se o botão "Iniciar" NÃO está escondido
         else {
             pauseGame(); // Apenas chama o menu de pausa
         }
         return; // Já lidamos com a tecla 'p', podemos sair
     }
-    
+
     // Controles do jogo (só funcionam se NÃO estiver pausado)
     if (isPaused) return; // Se estiver pausado, ignora as teclas de jogo abaixo
 
     // Lidamos com as teclas de jogo
     switch (e.key) {
-        case 'ArrowLeft': 
-            e.preventDefault(); 
-            playerMove(-1); 
+        case 'ArrowLeft':
+            e.preventDefault();
+            playerMove(-1);
             break;
-            
-        case 'ArrowRight': 
-            e.preventDefault(); 
-            playerMove(1); 
+
+        case 'ArrowRight':
+            e.preventDefault();
+            playerMove(1);
             break;
-            
-        case 'ArrowDown': 
-            e.preventDefault(); 
-            playerDrop(); 
+
+        case 'ArrowDown':
+            e.preventDefault();
+            playerDrop();
             break;
-            
-        case 'q': 
-            e.preventDefault(); 
-            playerRotate(-1); 
+
+        case 'q':
+            e.preventDefault();
+            playerRotate(-1);
             break;
-            
+
         case 'w':
-        case 'ArrowUp': 
-            e.preventDefault(); 
-            playerRotate(1); 
+        case 'ArrowUp':
+            e.preventDefault();
+            playerRotate(1);
             break;
     }
 });
@@ -511,12 +556,12 @@ function startGame() {
         music.play();
     }
 
-    isPaused = false; 
+    isPaused = false;
 
     if (pauseMenu && pauseMenu.open) {
         pauseMenu.close();
     }
-    
+
     // MODIFICAÇÃO: Garante que o menu Game Over está fechado
     if (gameOverMenu && gameOverMenu.open) {
         gameOverMenu.close();
@@ -544,7 +589,7 @@ function startGame() {
 
 // --- PONTO DE ENTRADA PRINCIPAL ---
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // --- 1. ENCONTRAR ELEMENTOS DO DOM ---
     music = document.getElementById('game-music');
     canvas = document.getElementById('tetris-field');
@@ -557,7 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
     pauseButton = document.getElementById('pause-button');
     pauseMenu = document.getElementById('pause-menu');
     resumeButton = document.getElementById('resume-button');
-    
+
     playerNameInput = document.getElementById('player-name-input');
     highScoreDisplay = document.getElementById('high-score-display');
 
@@ -599,7 +644,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error("ERRO: Botão #start-button não encontrado!");
     }
-    
+
     if (playerNameInput) {
         playerNameInput.addEventListener('input', (e) => {
             currentPlayerName = e.target.value.trim().toUpperCase() || "JOGADOR";
@@ -613,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
         restartButton.addEventListener('click', () => {
             // Apenas fecha o menu Game Over
             if (gameOverMenu) gameOverMenu.close();
-            
+
             // Garante que o foco vá para o input de nome
             // para que o jogador possa trocá-lo antes de
             // clicar no botão "Iniciar" principal.
@@ -621,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerNameInput.focus();
                 playerNameInput.select();
             }
-            
+
             // NÃO chamamos mais startGame() aqui.
         });
     } else {
@@ -668,9 +713,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (pauseMenu) {
         pauseMenu.addEventListener('cancel', (event) => {
-            event.preventDefault(); 
+            event.preventDefault();
             if (startButton && startButton.style.display === 'none') {
-                resumeGame(); 
+                resumeGame();
             }
         });
     }
@@ -678,13 +723,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 4. LISTENERS DE POP-UPS ---
     const instructions = document.getElementById('instrucoes');
     const close_button = document.getElementById('close');
-    
+
     setTimeout(() => {
         if (instructions) {
             instructions.showModal();
         }
     }, 1);
-    
+
     if (close_button) {
         close_button.addEventListener('click', () => {
             if (instructions) instructions.close();
@@ -696,7 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const configuracoes = document.getElementById('configuracoes');
     const config_open_button = document.getElementById('config');
     const config_close_button = document.getElementById('config-close-button');
-    
+
     if (config_open_button) {
         config_open_button.addEventListener('click', () => {
             if (configuracoes) configuracoes.showModal();
@@ -704,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.warn("AVISO: Botão #config (para abrir configs) não encontrado.");
     }
-    
+
     if (config_close_button) {
         config_close_button.addEventListener('click', () => {
             if (configuracoes) configuracoes.close();
@@ -714,9 +759,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 5. ESTADO INICIAL DO JOGO ---
-    loadHighScore(); 
-    updateHighScoreDisplay(); 
+    loadHighScore();
+    updateHighScoreDisplay();
     spawnPiece();
     updateScore();
     draw();
+
+    // --- 6. Easter Egg - Clique na Logo do Neotris ---
+    const neotrisLogo = document.getElementById('neotris-logo');
+    if (neotrisLogo) {
+        let clickCount = 0;
+        const maxClicks = 5; // Número de cliques necessários
+
+        neotrisLogo.addEventListener('click', (e) => {
+            clickCount++;
+
+            if (clickCount >= maxClicks) {
+                // Mostrar o Easter Egg
+                const neotrisEasterEggDialog = document.getElementById('neotris-easter-egg');
+                if (neotrisEasterEggDialog && !neotrisEasterEggDialog.open) {
+                    neotrisEasterEggDialog.showModal();
+
+                    // Adiciona evento para fechar o diálogo
+                    const closeBtn = document.getElementById('neotris-close');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', () => {
+                            neotrisEasterEggDialog.close();
+                        });
+                    }
+
+                    // Redirecionar para um link após 3 segundos
+                    setTimeout(() => {
+                        window.open('https://luizzmg.github.io/A-Metamorfose/', '_blank');
+                    }, 3000);
+
+                    // Resetar contador
+                    clickCount = 0;
+                }
+            }
+        });
+    }
+
 });
